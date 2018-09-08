@@ -18,3 +18,6 @@ You may use and/or modify this code.
 
 `ant jar` packages the project
 
+## Todo
+* Fix json to use OutputStream or something
+
