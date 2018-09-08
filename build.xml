@@ -35,7 +35,7 @@
         classpath="json-java/build/classes"
         debug="on"
         debuglevel="lines,vars,source"/>
-    <java classname="com.floorsix.preferences.Test" classpath="build/debug" fork="true">
+    <java classname="com.floorsix.preferences.Test" classpath="build/debug;json-java/build/classes" fork="true">
       <jvmarg value="-ea"/>
     </java>
   </target>
