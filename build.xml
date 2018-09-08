@@ -2,18 +2,24 @@
 
   <target name="clean">
     <delete dir="build"/>
+    <ant antfile="build.xml" target="clean" dir="json-java"/>
   </target>
 
-  <target name="compile">
+  <target name="deps">
+    <ant antfile="build.xml" target="compile" dir="json-java"/>
+  </target>
+
+  <target name="compile" depends="deps">
     <mkdir dir="build/classes"/>
-    <javac srcdir="src" destdir="build/classes" includeantruntime="false"/>
+    <javac srcdir="src" destdir="build/classes" includeantruntime="false" classpath="json-java/build/classes"/>
   </target>
 
   <target name="jar" depends="compile">
     <mkdir dir="build/jar"/>
-    <delete file="build/jar/fl6preferences.jar"/>
-    <jar destfile="build/jar/fl6preferences.jar">
+    <delete file="build/jar/f6preferences.jar"/>
+    <jar destfile="build/jar/f6preferences.jar">
       <fileset dir="build/classes"/>
+      <fileset dir="json-java/build/classes"/>
       <manifest>
         <attribute name="Main-Class" value="com.floorsix.preferences.Test"/>
       </manifest>
@@ -21,7 +27,7 @@
   </target>
 
   <target name="test">
-    <java jar="build/jar/fl6preferences.jar" fork="true"/>
+    <java jar="build/jar/f6preferences.jar" fork="true"/>
   </target>
 
 </project>
