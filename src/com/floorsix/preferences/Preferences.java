@@ -5,14 +5,18 @@ import com.floorsix.json.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.InputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Preferences
 {
-  static final String prefsFolder = ".java-user-prefs";
-  static final String prefsSuffix = ".json";
+  private static final String prefsFolder = ".java-user-prefs";
+  private static final String prefsSuffix = ".json";
 
-  static Preferences getUserPreferences(Class c)
+  public static Preferences getUserPreferences(Class c)
   {
     String className = c.getName();
 
@@ -43,15 +47,21 @@ public class Preferences
     {
       try
       {
-        root = JsonParser.parse(new FileInputStream(f));
+        FileInputStream in = new FileInputStream(f);
+        root = JsonParser.parse(in);
 
-        System.out.println("Read file: " + root);
+        try
+        {
+          in.close();
+        }
+        catch (IOException e)
+        {
+          // failed to close, ignore
+        }
       }
       catch (InvalidJsonException e)
       {
         root = new JsonObject(null);
-
-        System.out.println("Could not read file: " + root);
       }
       catch (FileNotFoundException e)
       {
@@ -61,31 +71,112 @@ public class Preferences
     else
     {
       root = new JsonObject(null);
-
-      System.out.println("No file: " + root);
     }
   }
 
-  public void commit()
+  public boolean delete()
   {
+    boolean success;
+
+    success = f.delete();
+
+    return success;
   }
 
-  public void set(String key, String value)
+  public boolean commit()
   {
+    boolean success;
+
+    try
+    {
+      FileWriter out = new FileWriter(f);
+      String json = root.toJson();
+      out.write(json, 0, json.length());
+      out.close();
+      success = true;
+    }
+    catch (IOException e)
+    {
+      success = false;
+    }
+
+    return success;
   }
 
-  public void set(String key, double value)
+  public void setString(String key, String value)
   {
+    root.set(key, value);
   }
 
-  public String get(String key)
+  public void setDouble(String key, double value)
   {
-    return null;
+    root.set(key, value);
   }
 
-  public double getDouble(String key)
+  public void setList(String key, List<String> value)
   {
-    return 0;
+    JsonArray array = root.setArray(key);
+
+    for (String s : value)
+    {
+      array.add(s);
+    }
+  }
+
+  public String getString(String key, String defaultValue)
+  {
+    Json json = root.get(key);
+
+    if (json instanceof JsonString)
+    {
+      return ((JsonString)json).get();
+    }
+    else
+    {
+      return defaultValue;
+    }
+  }
+
+  public double getDouble(String key, double defaultValue)
+  {
+    Json json = root.get(key);
+
+    if (json instanceof JsonNumber)
+    {
+      return ((JsonNumber)json).get();
+    }
+    else
+    {
+      return defaultValue;
+    }
+  }
+
+  public List<String> getList(String key)
+  {
+    ArrayList<String> list = new ArrayList<String>();
+
+    Json json = root.get(key);
+
+    if (json instanceof JsonArray)
+    {
+      List<Json> l = ((JsonArray)json).getArray();
+
+      for (Json j : l)
+      {
+        if (j instanceof JsonString)
+        {
+          list.add(((JsonString)j).get());
+        }
+      }
+    }
+
+    return list;
+  }
+
+  @Override
+  public String toString()
+  {
+    return root.toJson();
   }
 }
 
