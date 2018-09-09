@@ -1,41 +1,48 @@
-<project>
+<project default="compile">
+
+  <property name="srcpath" value="src"/>
+  <property name="buildpath" value="build"/>
+  <property name="classpath" value="${buildpath}/classes"/>
+  <property name="debugpath" value="${buildpath}/debug"/>
+  <property name="jarpath" value="${buildpath}/jar"/>
+  <property name="jarfile" value="f6preferences.jar"/>
+
+  <property name="build.sysclasspath" value="ignore"/>
 
   <target name="clean">
-    <ant antfile="build.xml" target="clean" dir="json-java"/>
-    <delete dir="build"/>
+    <delete dir="${buildpath}"/>
   </target>
 
-  <target name="deps">
-    <ant antfile="build.xml" target="compile" dir="json-java"/>
+  <target name="submodules">
+    <ant antfile="json-java/build.xml" useNativeBasedir="true" inheritAll="false">
+      <property name="buildpath" value="../${buildpath}"/>
+      <target name="compile"/>
+      <target name="debug"/>
+    </ant>
   </target>
 
-  <target name="compile" depends="deps">
-    <mkdir dir="build/classes"/>
-    <javac destdir="build/classes" includeantruntime="false" classpath="json-java/build/classes">
-      <src path="src"/>
+  <target name="compile" depends="submodules">
+    <mkdir dir="${classpath}"/>
+    <javac srcdir="${srcpath}" destdir="${classpath}">
       <exclude name="com/floorsix/preferences/Test.java"/>
     </javac>
   </target>
 
+  <target name="debug" depends="submodules">
+    <mkdir dir="${debugpath}"/>
+    <javac srcdir="${srcpath}" destdir="${debugpath}" debug="on" debuglevel="lines,vars,source"/>
+  </target>
+
   <target name="jar" depends="compile">
-    <mkdir dir="build/jar"/>
-    <delete file="build/jar/f6preferences.jar"/>
-    <jar destfile="build/jar/f6preferences.jar">
-      <fileset dir="build/classes"/>
-      <fileset dir="json-java/build/classes"/>
+    <mkdir dir="${jarpath}"/>
+    <delete file="${jarpath}/${jarfile}"/>
+    <jar destfile="${jarpath}/${jarfile}">
+      <fileset dir="${classpath}"/>
     </jar>
   </target>
 
-  <target name="test" depends="deps">
-    <mkdir dir="build/debug"/>
-    <javac
-        srcdir="src"
-        destdir="build/debug"
-        includeantruntime="false"
-        classpath="json-java/build/classes"
-        debug="on"
-        debuglevel="lines,vars,source"/>
-    <java classname="com.floorsix.preferences.Test" classpath="build/debug;json-java/build/classes" fork="true">
+  <target name="test" depends="debug">
+    <java classname="com.floorsix.preferences.Test" classpath="${debugpath}" fork="true">
       <jvmarg value="-ea"/>
     </java>
   </target>
