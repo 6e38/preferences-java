@@ -24,5 +24,4 @@ You may use and/or modify this code.
 
 ## Todo
 * Javadoc
-* Fix json to use OutputStream or something
 

@@ -8,7 +8,7 @@ import com.floorsix.json.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 abstract class AbstractDatastore
@@ -95,9 +95,8 @@ abstract class AbstractDatastore
 
     try
     {
-      FileWriter out = new FileWriter(f);
-      String json = root.toJson();
-      out.write(json, 0, json.length());
+      FileOutputStream out = new FileOutputStream(f);
+      root.toJson(out);
       out.close();
       success = true;
     }

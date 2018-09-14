@@ -109,7 +109,7 @@ public class Preferences extends AbstractDatastore
   @Override
   public String toString()
   {
-    return root.toJson();
+    return root.toString();
   }
 }
 
