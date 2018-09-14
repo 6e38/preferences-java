@@ -13,7 +13,7 @@ import java.io.IOException;
 
 abstract class AbstractDatastore
 {
-  static final String linuxDatastoreFolder = ".java-datastore";
+  static final String linuxDatastoreFolder = ".datastore-java";
   static final String fileExtension = ".json";
 
   static String getDatastorePath(String subpath)
@@ -22,7 +22,7 @@ abstract class AbstractDatastore
 
     String os = System.getProperty("os.name");
 
-    if (os.matches("/^windows/i"))
+    if (os.matches("^Windows.*"))
     {
       storePath = System.getenv("LOCALAPPDATA");
     }
@@ -40,7 +40,7 @@ abstract class AbstractDatastore
 
     if (!folder.exists())
     {
-      folder.mkdir();
+      folder.mkdirs();
     }
 
     return storePath;

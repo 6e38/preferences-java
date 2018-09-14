@@ -15,7 +15,7 @@ import java.util.List;
 
 public class Preferences extends AbstractDatastore
 {
-  private static final String prefsFolder = "java-prefs";
+  private static final String prefsFolder = "Preferences-java";
 
   public static Preferences getUserPreferences(Class c)
   {
