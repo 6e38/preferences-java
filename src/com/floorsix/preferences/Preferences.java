@@ -105,11 +105,5 @@ public class Preferences extends AbstractDatastore
 
     return list;
   }
-
-  @Override
-  public String toString()
-  {
-    return root.toString();
-  }
 }
 

@@ -4,6 +4,9 @@
 
 package com.floorsix.preferences;
 
+import com.floorsix.json.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +14,15 @@ public class Test
 {
   public static void main(String[] args)
   {
+    Test test = new Test();
+    test.runTests();
+  }
+
+  private void runTests()
+  {
     try
     {
-      test();
+      invokeTests();
       System.out.println("\nPASS: all tests succeeded");
     }
     catch (AssertionError e)
@@ -36,7 +45,44 @@ public class Test
     }
   }
 
-  private static void test()
+  private void invokeTests() throws AssertionError
+  {
+    Class c = this.getClass();
+    Method[] methods = c.getDeclaredMethods();
+
+    for (Method m : methods)
+    {
+      if (m.getName().matches("^test.*"))
+      {
+        System.out.print("Running: " + m.getName() + " ");
+
+        try
+        {
+          m.invoke(this);
+          System.out.println("PASS");
+        }
+        catch (IllegalAccessException e)
+        {
+          System.out.println("FAIL");
+          System.out.println(e);
+        }
+        catch (InvocationTargetException e)
+        {
+          System.out.println("FAIL");
+          if (e.getCause() != null && e.getCause() instanceof AssertionError)
+          {
+            throw (AssertionError)e.getCause();
+          }
+          else
+          {
+            System.out.println(e.getCause());
+          }
+        }
+      }
+    }
+  }
+
+  private void testPreferences()
   {
     Preferences p = Preferences.getUserPreferences(Test.class);
     p.delete();
@@ -87,6 +133,18 @@ public class Test
     assert l.get(0).equals("s1");
     assert l.get(1).equals("s2");
     assert l.get(2).equals("s3");
+  }
+
+  private void testDatastore1()
+  {
+    Datastore d = Datastore.getDatastore(getClass(), "stuff");
+    d.delete();
+    d.save();
+    assert d.toString().equals("{}") : d;
+    d.set(new JsonString("k1", "v1"));
+    assert d.get("k1") instanceof JsonString;
+    assert ((JsonString)d.get("k1")).get().equals("v1");
+    d.save();
   }
 }
 

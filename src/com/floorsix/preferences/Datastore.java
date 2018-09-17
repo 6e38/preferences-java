@@ -21,5 +21,15 @@ public class Datastore extends AbstractDatastore
   {
     initialize(path, filename);
   }
+
+  public void set(Json value)
+  {
+    root.set(value);
+  }
+
+  public Json get(String key)
+  {
+    return root.get(key);
+  }
 }
 

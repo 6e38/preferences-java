@@ -86,6 +86,7 @@ abstract class AbstractDatastore
 
   public boolean delete()
   {
+    root.clear();
     return f.delete();
   }
 
@@ -106,6 +107,12 @@ abstract class AbstractDatastore
     }
 
     return success;
+  }
+
+  @Override
+  public String toString()
+  {
+    return root.toString();
   }
 }
 
