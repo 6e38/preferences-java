@@ -5,81 +5,14 @@
 package com.floorsix.preferences;
 
 import com.floorsix.json.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Test
+public class Test extends AbstractTest
 {
   public static void main(String[] args)
   {
-    Test test = new Test();
-    test.runTests();
-  }
-
-  private void runTests()
-  {
-    try
-    {
-      invokeTests();
-      System.out.println("\nPASS: all tests succeeded");
-    }
-    catch (AssertionError e)
-    {
-      System.out.print("\nTest failure");
-
-      if (e.getMessage() != null)
-      {
-        System.out.print(": " + e.getMessage());
-      }
-
-      System.out.println();
-
-      for (StackTraceElement trace : e.getStackTrace())
-      {
-        System.out.println(">> " + trace);
-      }
-
-      System.out.println("\nFAIL");
-    }
-  }
-
-  private void invokeTests() throws AssertionError
-  {
-    Class c = this.getClass();
-    Method[] methods = c.getDeclaredMethods();
-
-    for (Method m : methods)
-    {
-      if (m.getName().matches("^test.*"))
-      {
-        System.out.print("Running: " + m.getName() + " ");
-
-        try
-        {
-          m.invoke(this);
-          System.out.println("PASS");
-        }
-        catch (IllegalAccessException e)
-        {
-          System.out.println("FAIL");
-          System.out.println(e);
-        }
-        catch (InvocationTargetException e)
-        {
-          System.out.println("FAIL");
-          if (e.getCause() != null && e.getCause() instanceof AssertionError)
-          {
-            throw (AssertionError)e.getCause();
-          }
-          else
-          {
-            System.out.println(e.getCause());
-          }
-        }
-      }
-    }
+    (new Test()).test();
   }
 
   private void testPreferences()
