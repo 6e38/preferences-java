@@ -79,5 +79,30 @@ public class Test extends AbstractTest
     assert ((JsonString)d.get("k1")).get().equals("v1");
     d.save();
   }
+
+  private void testInt()
+  {
+    Preferences p = Preferences.getUserPreferences(Test.class);
+    p.delete();
+
+    assert p.getInt("int", 1234) == 1234;
+    p.setInt("int", 56);
+    assert p.getInt("int", 1234) == 56;
+    p.setDouble("double", 3.14);
+    assert p.getInt("double", 1234) == 3;
+  }
+
+  private void testBoolean()
+  {
+    Preferences p = Preferences.getUserPreferences(Test.class);
+    p.delete();
+
+    assert p.getBoolean("boolean", true) == true;
+    assert p.getBoolean("boolean", false) == false;
+    p.setBoolean("boolean", true);
+    assert p.getBoolean("boolean", false) == true;
+    p.setBoolean("boolean", false);
+    assert p.getBoolean("boolean", true) == false;
+  }
 }
 

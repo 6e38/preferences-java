@@ -41,6 +41,16 @@ public class Preferences extends AbstractDatastore
     root.set(key, value);
   }
 
+  public void setInt(String key, int value)
+  {
+    root.set(key, value);
+  }
+
+  public void setBoolean(String key, boolean value)
+  {
+    root.set(key, value);
+  }
+
   public void setDouble(String key, double value)
   {
     root.set(key, value);
@@ -63,6 +73,34 @@ public class Preferences extends AbstractDatastore
     if (json instanceof JsonString)
     {
       return ((JsonString)json).get();
+    }
+    else
+    {
+      return defaultValue;
+    }
+  }
+
+  public int getInt(String key, int defaultValue)
+  {
+    Json json = root.get(key);
+
+    if (json instanceof JsonNumber)
+    {
+      return (int)((JsonNumber)json).get();
+    }
+    else
+    {
+      return defaultValue;
+    }
+  }
+
+  public boolean getBoolean(String key, boolean defaultValue)
+  {
+    Json json = root.get(key);
+
+    if (json instanceof JsonBoolean)
+    {
+      return ((JsonBoolean)json).get();
     }
     else
     {
