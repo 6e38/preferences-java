@@ -16,14 +16,28 @@ import java.util.List;
 public class Preferences extends AbstractDatastore
 {
   private static final String prefsFolder = "Preferences-java";
+  private static Preferences s_prefs = null;
 
-  public static Preferences getUserPreferences(Class c)
+  public static synchronized Preferences getUserPreferences(Class c)
   {
+    if (s_prefs != null)
+    {
+      return s_prefs;
+    }
+
     String prefsPath = getDatastorePath(prefsFolder);
 
     String filename = c.getName() + fileExtension;
 
-    return new Preferences(prefsPath, filename);
+    s_prefs = new Preferences(prefsPath, filename);
+
+    String relocatedPath = s_prefs.getString("__relocated__", null);
+    if (relocatedPath != null)
+    {
+      s_prefs = new Preferences(relocatedPath, filename);
+    }
+
+    return s_prefs;
   }
 
   private Preferences(String path, String filename)
